@@ -3,6 +3,8 @@ mysqlPort: 3306
 mysqlUsername: 'root'
 mysqlPassword: '1234567890'
 mysqlDatabaseName: 'buildtheword'
+pluginPrefix: '&7[&bBTW&7] '
+minimumPlayers: 2
 spawnLocation:
   world: 'world'
   x: 0.5

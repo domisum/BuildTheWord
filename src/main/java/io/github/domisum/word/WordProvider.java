@@ -52,7 +52,7 @@ public class WordProvider
 	
 	private Word queryRandomWord() throws SQLException
 	{
-		String randomWordSQL = "SELECT * from " + TABLE_NAME + " ORDER BY RAND() LIMIT 1";
+		String randomWordSQL = "SELECT * FROM " + TABLE_NAME + " ORDER BY RAND() LIMIT 1";
 		PreparedStatement randomWordStatement = MySQLUtil.prepareStatement(randomWordSQL);
 		ResultSet randomWordResultSet = randomWordStatement.executeQuery();
 		

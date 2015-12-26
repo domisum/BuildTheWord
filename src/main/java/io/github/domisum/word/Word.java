@@ -17,13 +17,18 @@ public class Word
 	// -------
 	public Word(String name)
 	{
-	
+		this.name = name;
 	}
 	
 	
 	// -------
 	// GETTERS
 	// -------
+	public String getName()
+	{
+		return name;
+	}
+	
 	public boolean isContainedIn(String message)
 	{
 		message = message.toLowerCase();

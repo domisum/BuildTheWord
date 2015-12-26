@@ -33,7 +33,13 @@ public class GameListener implements Listener
 	{
 		Player player = event.getPlayer();
 		
-		player.teleport(BuildTheWord.getGame().getSpawnLocation());
+		Game.makePlayer(player);
+		
+		BuildTheWord.broadcastMessage(event.getJoinMessage());
+		event.setJoinMessage(null);
+		
+		if(BuildTheWord.getGame().getGameStatus() == GameStatus.WAITING)
+			BuildTheWord.getGame().tryStart();
 	}
 	
 }
