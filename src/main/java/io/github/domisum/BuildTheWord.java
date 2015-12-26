@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import io.github.domisum.db.MySQLUtil;
 import io.github.domisum.game.Game;
+import io.github.domisum.game.GameListener;
 
 public class BuildTheWord extends JavaPlugin
 {
@@ -13,7 +14,7 @@ public class BuildTheWord extends JavaPlugin
 	// REFERENCES
 	private static BuildTheWord instance;
 	
-	private static Game game; 
+	private static Game game;
 	
 	
 	// -------
@@ -36,6 +37,7 @@ public class BuildTheWord extends JavaPlugin
 		game = new Game();
 		
 		// register listeners and command executors
+		new GameListener();
 		
 		
 		getLogger().info(getDescription().getName() + " v" + getDescription().getVersion() + " has been enabled\n");
