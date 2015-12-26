@@ -5,12 +5,15 @@ import java.io.File;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import io.github.domisum.db.MySQLUtil;
+import io.github.domisum.game.Game;
 
 public class BuildTheWord extends JavaPlugin
 {
 	
 	// REFERENCES
 	private static BuildTheWord instance;
+	
+	private static Game game; 
 	
 	
 	// -------
@@ -29,6 +32,8 @@ public class BuildTheWord extends JavaPlugin
 		
 		// initiate managers and helpers
 		MySQLUtil.establishConnection();
+		
+		game = new Game();
 		
 		// register listeners and command executors
 		
@@ -61,6 +66,11 @@ public class BuildTheWord extends JavaPlugin
 	public static BuildTheWord getInstance()
 	{
 		return instance;
+	}
+	
+	public static Game getGame()
+	{
+		return game;
 	}
 	
 }
