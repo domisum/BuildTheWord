@@ -1,0 +1,5 @@
+mysqlHost: 'localhost'
+mysqlPort: 3306
+mysqlUsername: 'root'
+mysqlPassword: '1234567890'
+mysqlDatabaseName: 'buildtheword'
