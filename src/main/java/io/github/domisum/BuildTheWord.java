@@ -51,7 +51,7 @@ public class BuildTheWord extends JavaPlugin
 		for(Player p : Bukkit.getOnlinePlayers())
 			Game.makePlayer(p);
 		
-		game.tryStart();
+		game.tryStartGame();
 	}
 	
 	@Override
@@ -96,14 +96,6 @@ public class BuildTheWord extends JavaPlugin
 	}
 	
 	public static void broadcastMessage(Collection<? extends Player> recipients, String message)
-	{
-		for(Player p : recipients)
-			p.sendMessage(ConfigUtil.getStringCC("pluginPrefix") + message);
-			
-		getInstance().getLogger().info("BROADCAST <- '" + ChatColor.stripColor(message) + "'");
-	}
-	
-	public static void broadcastMessage(Player[] recipients, String message)
 	{
 		for(Player p : recipients)
 			p.sendMessage(ConfigUtil.getStringCC("pluginPrefix") + message);

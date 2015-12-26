@@ -72,6 +72,16 @@ public class Game
 		return gameStatus;
 	}
 	
+	public Player getBuilder()
+	{
+		return builder;
+	}
+	
+	public Word getCurrentWord()
+	{
+		return currentWord;
+	}
+	
 	
 	// -------
 	// PLAYER
@@ -92,10 +102,23 @@ public class Game
 	}
 	
 	
+	public void guessWord(Player player)
+	{
+		Collection<? extends Player> everybodyElse = Bukkit.getOnlinePlayers();
+		everybodyElse.remove(player);
+		
+		BuildTheWord.sendMessage(player, "Du hast das Wort erraten!");
+		BuildTheWord.broadcastMessage(everybodyElse, "§b" + player.getName() + "$f hat das Wort erraten!");
+		
+		
+		// TODO start end countdown
+	}
+	
+	
 	// -------
 	// PROCESS
 	// -------
-	public void tryStart()
+	public void tryStartGame()
 	{
 		if(Bukkit.getOnlinePlayers().size() >= ConfigUtil.getInt("minimumPlayers"))
 			startGame();
@@ -114,12 +137,16 @@ public class Game
 	private void startRound()
 	{
 		scoreManager.reset();
+		previousBuilderUUIDs.clear();
+		builder = null;
+		currentWord = null;
+		
 		BuildTheWord.broadcastMessage("Eine neue Runde wird begonnen.");
 		
-		nextBuild();
+		startBuild();
 	}
 	
-	private void nextBuild()
+	private void startBuild()
 	{
 		if(builder != null)
 		{
@@ -149,6 +176,15 @@ public class Game
 		makeBuilder(builder);
 		
 		BuildTheWord.sendMessage(builder, "Du wurdest zum Bauenden gewählt. Dein Wort ist '§b" + currentWord.getName() + "§f'.");
+		
+		// TODO start round countdown
+	}
+	
+	private void endBuild()
+	{
+		
+		
+		startBuild();
 	}
 	
 	

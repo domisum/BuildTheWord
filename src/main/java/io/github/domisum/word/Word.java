@@ -34,11 +34,11 @@ public class Word
 		message = message.toLowerCase();
 		message = message.replaceAll("\\s+", ""); // remove all spaces
 		
-		if(message.contains(name))
+		if(message.contains(name.toLowerCase()))
 			return true;
-			
+		
 		for(String synonym : synonyms)
-			if(message.contains(synonym))
+			if(message.contains(synonym.toLowerCase()))
 				return true;
 				
 		return false;
@@ -50,6 +50,9 @@ public class Word
 	// -------
 	public void addSynonym(String synonym)
 	{
+		if(synonym.equals("") || synonym.equals(" "))
+			return;
+		
 		synonyms.add(synonym);
 	}
 	
