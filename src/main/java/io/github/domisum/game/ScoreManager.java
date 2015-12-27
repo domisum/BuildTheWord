@@ -35,8 +35,24 @@ public class ScoreManager implements Listener
 	
 	
 	// -------
+	// GETTERS
+	// -------
+	public int getScore(Player player)
+	{
+		return scores.get(player);
+	}
+	
+	
+	// -------
 	// CHANGERS
 	// -------
+	public void score(Player player, int score)
+	{
+		scores.put(player, getScore(player) + score);
+		
+		BuildTheWord.sendMessage(player, "Du erhälst §b" + score + "§f Punkte.");
+	}
+	
 	public void reset()
 	{
 		for(Player key : scores.keySet())

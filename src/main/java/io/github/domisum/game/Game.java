@@ -116,9 +116,13 @@ public class Game
 		BuildTheWord.sendMessage(player, "Du hast das Wort erraten!");
 		BuildTheWord.broadcastMessage(everybodyElse, "§b" + player.getName() + "§f hat das Wort erraten!");
 		
-		boolean first = buildingEndCountdown == null; // if this countdown has not started yet, the guess was the first one
-		if(first)
+		if(buildingEndCountdown == null) // if this countdown has not started yet, the guess was the first one
 		{
+			// scores
+			scoreManager.score(player, ConfigUtil.getInt("scoreFirstGuess"));
+			scoreManager.score(builder, ConfigUtil.getInt("scoreBuildingGuessed"));
+			
+			// countdowns
 			buildingCountdown.cancel();
 			buildingCountdown = null;
 			
@@ -133,7 +137,8 @@ public class Game
 			buildingEndCountdown = new Countdown(ConfigUtil.getInt("buildingEndDuration"), stepAction, () -> endBuild(true));
 			buildingEndCountdown.start();
 		}
-		
+		else
+			scoreManager.score(player, ConfigUtil.getInt("scoreFollowingGuesses"));
 	}
 	
 	
