@@ -1,4 +1,4 @@
-package io.github.domisum.game;
+package io.github.domisum.game.status;
 
 
 public enum GameStatus

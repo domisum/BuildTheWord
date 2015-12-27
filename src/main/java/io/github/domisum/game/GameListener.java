@@ -8,6 +8,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import io.github.domisum.BuildTheWord;
+import io.github.domisum.game.status.GameStatus;
 import io.github.domisum.word.Word;
 
 public class GameListener implements Listener
@@ -65,6 +66,7 @@ public class GameListener implements Listener
 		// the builder can't guess his own word!
 		if(player == BuildTheWord.getGame().getBuilder())
 		{
+			event.setCancelled(true);
 			Bukkit.getScheduler().runTaskLater(BuildTheWord.getInstance(), () -> BuildTheWord.sendMessage(player, "Verrate nicht das Wort!"), 0);
 			return;
 		}

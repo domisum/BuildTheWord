@@ -14,6 +14,9 @@ import org.bukkit.entity.Player;
 import io.github.domisum.BuildTheWord;
 import io.github.domisum.config.ConfigLocation;
 import io.github.domisum.config.ConfigUtil;
+import io.github.domisum.game.status.Countdown;
+import io.github.domisum.game.status.Countdown.TimedRunnable;
+import io.github.domisum.game.status.GameStatus;
 import io.github.domisum.util.PlayerUtil;
 import io.github.domisum.util.RandomUtil;
 import io.github.domisum.word.Word;
@@ -32,6 +35,9 @@ public class Game
 	
 	// STATUS
 	private GameStatus gameStatus = GameStatus.WAITING;
+	
+	private Countdown buildingCountdown;
+	private Countdown buildingEndCountdown;
 	
 	private Set<UUID> previousBuilderUUIDs = new HashSet<UUID>();
 	private Player builder;
@@ -104,14 +110,24 @@ public class Game
 	
 	public void guessWord(Player player)
 	{
-		Collection<? extends Player> everybodyElse = Bukkit.getOnlinePlayers();
+		Collection<Player> everybodyElse = new HashSet<Player>(Bukkit.getOnlinePlayers());
 		everybodyElse.remove(player);
 		
 		BuildTheWord.sendMessage(player, "Du hast das Wort erraten!");
-		BuildTheWord.broadcastMessage(everybodyElse, "§b" + player.getName() + "$f hat das Wort erraten!");
+		BuildTheWord.broadcastMessage(everybodyElse, "§b" + player.getName() + "§f hat das Wort erraten!");
 		
+		boolean first = buildingEndCountdown == null; // if this countdown has not started yet, the guess was the first one
+		if(first)
+		{
+			TimedRunnable stepAction = (timeLeft) ->
+			{
+				for(Player p : Bukkit.getOnlinePlayers())
+					p.setLevel(timeLeft);
+			};
+			buildingEndCountdown = new Countdown(ConfigUtil.getInt("buildingEndCountdown"), stepAction, () -> endBuild(true));
+			buildingEndCountdown.start();
+		}
 		
-		// TODO start end countdown
 	}
 	
 	
@@ -177,12 +193,23 @@ public class Game
 		
 		BuildTheWord.sendMessage(builder, "Du wurdest zum Bauenden gewählt. Dein Wort ist '§b" + currentWord.getName() + "§f'.");
 		
-		// TODO start round countdown
+		TimedRunnable stepAction = (timeLeft) ->
+		{
+			for(Player p : Bukkit.getOnlinePlayers())
+				p.setLevel(timeLeft);
+		};
+		
+		buildingCountdown = new Countdown(ConfigUtil.getInt("buildingDuration"), stepAction, () -> endBuild(false));
+		buildingCountdown.start();
 	}
 	
-	private void endBuild()
+	private void endBuild(boolean guessed)
 	{
-		
+		if(buildingCountdown != null)
+		{
+			buildingCountdown.cancel();
+			buildingCountdown = null;
+		}
 		
 		startBuild();
 	}

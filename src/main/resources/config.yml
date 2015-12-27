@@ -5,6 +5,8 @@ mysqlPassword: '1234567890'
 mysqlDatabaseName: 'buildtheword'
 pluginPrefix: '&7[&bBTW&7] '
 minimumPlayers: 2
+buildingDuration: 60
+buildingEndDuration: 10
 spawnLocation:
   world: 'world'
   x: 0.5
