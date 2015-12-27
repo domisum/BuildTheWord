@@ -51,6 +51,7 @@ public class BuildTheWord extends JavaPlugin
 		for(Player p : Bukkit.getOnlinePlayers())
 			Game.makePlayer(p);
 		
+		game.getScoreManager().reload();
 		game.tryStartGame();
 	}
 	

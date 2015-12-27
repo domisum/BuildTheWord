@@ -7,6 +7,7 @@ pluginPrefix: '&7[&bBTW&7] '
 minimumPlayers: 2
 buildingDuration: 60
 buildingEndDuration: 10
+afterRoundDuration: 5
 scoreFirstGuess: 3
 scoreFollowingGuesses: 1
 scoreBuildingGuessed: 2

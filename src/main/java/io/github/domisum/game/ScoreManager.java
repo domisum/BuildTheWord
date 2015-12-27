@@ -1,8 +1,12 @@
 package io.github.domisum.game;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,6 +46,26 @@ public class ScoreManager implements Listener
 		return scores.get(player);
 	}
 	
+	public Set<Player> getHighestScorers()
+	{
+		int highestScore = 0;
+		Set<Player> highestScorers = new HashSet<Player>();
+		
+		for(Entry<Player, Integer> entry : scores.entrySet())
+		{
+			if(entry.getValue() > highestScore)
+			{
+				highestScore = entry.getValue();
+				highestScorers.clear();
+				highestScorers.add(entry.getKey());
+			}
+			else if(entry.getValue() == highestScore)
+				highestScorers.add(entry.getKey());
+		}
+		
+		return highestScorers;
+	}
+	
 	
 	// -------
 	// CHANGERS
@@ -57,6 +81,12 @@ public class ScoreManager implements Listener
 	{
 		for(Player key : scores.keySet())
 			scores.put(key, 0);
+	}
+	
+	public void reload()
+	{
+		for(Player p : Bukkit.getOnlinePlayers())
+			scores.put(p, 0);
 	}
 	
 	

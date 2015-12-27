@@ -17,6 +17,7 @@ import io.github.domisum.config.ConfigUtil;
 import io.github.domisum.game.status.Countdown;
 import io.github.domisum.game.status.Countdown.TimedRunnable;
 import io.github.domisum.game.status.GameStatus;
+import io.github.domisum.util.LanguageUtil;
 import io.github.domisum.util.PlayerUtil;
 import io.github.domisum.util.RandomUtil;
 import io.github.domisum.word.Word;
@@ -70,6 +71,11 @@ public class Game
 	public WordProvider getWordProvider()
 	{
 		return wordProvider;
+	}
+	
+	public ScoreManager getScoreManager()
+	{
+		return scoreManager;
 	}
 	
 	
@@ -129,10 +135,7 @@ public class Game
 			TimedRunnable stepAction = (timeLeft) ->
 			{
 				for(Player p : Bukkit.getOnlinePlayers())
-					p.setLevel(timeLeft);
-					
-				if(timeLeft == 10 || timeLeft == 5 || timeLeft <= 3)
-					BuildTheWord.broadcastMessage("Noch §b" + timeLeft + "§f Sekunden verbleibend.");
+					PlayerUtil.sendActionBar(p, "§b" + timeLeft + "§fs verbleibend");
 			};
 			buildingEndCountdown = new Countdown(ConfigUtil.getInt("buildingEndDuration"), stepAction, () -> endBuild(true));
 			buildingEndCountdown.start();
@@ -203,15 +206,12 @@ public class Game
 		builder = remainingPlayers.toArray(new Player[remainingPlayers.size()])[RandomUtil.nextInt(remainingPlayers.size())];
 		makeBuilder(builder);
 		
-		BuildTheWord.sendMessage(builder, "Du wurdest zum Bauenden gewählt. Dein Wort ist '§b" + currentWord.getName() + "§f'.");
+		BuildTheWord.sendMessage(builder, "Du wurdest fürs Bauen gewählt. Dein Wort ist '§b" + currentWord.getName() + "§f'.");
 		
 		TimedRunnable stepAction = (timeLeft) ->
 		{
 			for(Player p : Bukkit.getOnlinePlayers())
-				p.setLevel(timeLeft);
-				
-			if(timeLeft % 20 == 0 || timeLeft == 10 || timeLeft == 5 || timeLeft <= 3)
-				BuildTheWord.broadcastMessage("Noch §b" + timeLeft + "§f Sekunden verbleibend.");
+				PlayerUtil.sendActionBar(p, "§b" + timeLeft + "§fs verbleibend");
 		};
 		
 		buildingCountdown = new Countdown(ConfigUtil.getInt("buildingDuration"), stepAction, () -> endBuild(false));
@@ -241,6 +241,18 @@ public class Game
 	private void endRound()
 	{
 		BuildTheWord.broadcastMessage("Die Runde ist vorbei.");
+		
+		// announce winner
+		Set<Player> winners = scoreManager.getHighestScorers();
+		if(winners.size() == 0)
+			BuildTheWord.broadcastMessage("Niemand hat die Runde gewonnen. Schade!");
+		else if(winners.size() == 1)
+			BuildTheWord.broadcastMessage("§b" + winners.iterator().next() + "§f hat die Runde gewonnen. Glückwunsch!");
+		else
+			BuildTheWord.broadcastMessage(LanguageUtil.getPlayerNameList(winners) + " haben die Runde gewonnen. Glückwunsch!");
+			
+		// start next round
+		Bukkit.getScheduler().runTaskLater(BuildTheWord.getInstance(), () -> startRound(), ConfigUtil.getInt("afterRoundDuration") * 20);
 	}
 	
 }
