@@ -50,6 +50,9 @@ public class GameListener implements Listener
 	@EventHandler
 	public void playerChat(AsyncPlayerChatEvent event)
 	{
+		// make chat look nice
+		event.setFormat("§b%1$s§f: %2$s");
+		
 		Player player = event.getPlayer();
 		
 		Word currentWord = BuildTheWord.getGame().getCurrentWord();

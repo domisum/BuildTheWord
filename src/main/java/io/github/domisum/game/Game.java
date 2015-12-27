@@ -119,12 +119,18 @@ public class Game
 		boolean first = buildingEndCountdown == null; // if this countdown has not started yet, the guess was the first one
 		if(first)
 		{
+			buildingCountdown.cancel();
+			buildingCountdown = null;
+			
 			TimedRunnable stepAction = (timeLeft) ->
 			{
 				for(Player p : Bukkit.getOnlinePlayers())
 					p.setLevel(timeLeft);
+					
+				if(timeLeft == 10 || timeLeft == 5 || timeLeft <= 3)
+					BuildTheWord.broadcastMessage("Noch §b" + timeLeft + "§f Sekunden verbleibend.");
 			};
-			buildingEndCountdown = new Countdown(ConfigUtil.getInt("buildingEndCountdown"), stepAction, () -> endBuild(true));
+			buildingEndCountdown = new Countdown(ConfigUtil.getInt("buildingEndDuration"), stepAction, () -> endBuild(true));
 			buildingEndCountdown.start();
 		}
 		
@@ -157,7 +163,7 @@ public class Game
 		builder = null;
 		currentWord = null;
 		
-		BuildTheWord.broadcastMessage("Eine neue Runde wird begonnen.");
+		BuildTheWord.broadcastMessage("Eine neue Runde hat begonnen.");
 		
 		startBuild();
 	}
@@ -166,12 +172,13 @@ public class Game
 	{
 		if(builder != null)
 		{
+			previousBuilderUUIDs.add(builder.getUniqueId());
 			makePlayer(builder);
 			builder = null;
 		}
 		
 		// determine next builder
-		Collection<? extends Player> remainingPlayers = Bukkit.getOnlinePlayers();
+		Set<Player> remainingPlayers = new HashSet<Player>(Bukkit.getOnlinePlayers());
 		for(UUID uuid : previousBuilderUUIDs)
 			remainingPlayers.removeIf((o) ->
 			{
@@ -197,6 +204,9 @@ public class Game
 		{
 			for(Player p : Bukkit.getOnlinePlayers())
 				p.setLevel(timeLeft);
+				
+			if(timeLeft % 20 == 0 || timeLeft == 10 || timeLeft == 5 || timeLeft <= 3)
+				BuildTheWord.broadcastMessage("Noch §b" + timeLeft + "§f Sekunden verbleibend.");
 		};
 		
 		buildingCountdown = new Countdown(ConfigUtil.getInt("buildingDuration"), stepAction, () -> endBuild(false));
@@ -210,6 +220,14 @@ public class Game
 			buildingCountdown.cancel();
 			buildingCountdown = null;
 		}
+		buildingEndCountdown = null;
+		
+		String message = "Die Runde ist vorbei.";
+		if(!guessed)
+			message += " Niemand hat das Wort erraten.";
+			
+		message += " Das Wort war '§b" + currentWord.getName() + "§f'.";
+		BuildTheWord.broadcastMessage(message);
 		
 		startBuild();
 	}
@@ -217,7 +235,7 @@ public class Game
 	
 	private void endRound()
 	{
-	
+		BuildTheWord.broadcastMessage("Die Runde ist vorbei.");
 	}
 	
 }
