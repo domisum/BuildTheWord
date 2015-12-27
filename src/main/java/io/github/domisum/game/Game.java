@@ -170,6 +170,7 @@ public class Game
 		previousBuilderUUIDs.clear();
 		builder = null;
 		currentWord = null;
+		ScoreboardManager.updateScoreboard();
 		
 		BuildTheWord.broadcastMessage("Eine neue Runde hat begonnen.");
 		

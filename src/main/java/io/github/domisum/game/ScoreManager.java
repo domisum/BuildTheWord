@@ -73,6 +73,7 @@ public class ScoreManager implements Listener
 	public void score(Player player, int score)
 	{
 		scores.put(player, getScore(player) + score);
+		ScoreboardManager.updateScoreboard();
 		
 		BuildTheWord.sendMessage(player, "Du erhälst §b" + score + "§f Punkte.");
 	}
@@ -97,18 +98,24 @@ public class ScoreManager implements Listener
 	public void playerJoin(PlayerJoinEvent event)
 	{
 		scores.put(event.getPlayer(), 0);
+		
+		ScoreboardManager.updateScoreboard();
 	}
 	
 	@EventHandler
 	public void playerQuit(PlayerQuitEvent event)
 	{
 		scores.remove(event.getPlayer());
+		
+		Bukkit.getScheduler().runTaskLater(BuildTheWord.getInstance(), () -> ScoreboardManager.updateScoreboard(), 0);
 	}
 	
 	@EventHandler
 	public void playerKick(PlayerKickEvent event)
 	{
 		scores.remove(event.getPlayer());
+		
+		Bukkit.getScheduler().runTaskLater(BuildTheWord.getInstance(), () -> ScoreboardManager.updateScoreboard(), 0);
 	}
 	
 }

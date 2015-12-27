@@ -12,6 +12,7 @@ import io.github.domisum.config.ConfigUtil;
 import io.github.domisum.db.MySQLUtil;
 import io.github.domisum.game.Game;
 import io.github.domisum.game.GameListener;
+import io.github.domisum.game.ScoreboardManager;
 
 public class BuildTheWord extends JavaPlugin
 {
@@ -50,8 +51,9 @@ public class BuildTheWord extends JavaPlugin
 		// reload interaction - this makes the plugin compatible with the /reload command
 		for(Player p : Bukkit.getOnlinePlayers())
 			Game.makePlayer(p);
-		
+			
 		game.getScoreManager().reload();
+		ScoreboardManager.updateScoreboard();
 		game.tryStartGame();
 	}
 	
