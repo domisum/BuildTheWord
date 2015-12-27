@@ -11,7 +11,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import io.github.domisum.config.ConfigUtil;
 import io.github.domisum.db.MySQLUtil;
 import io.github.domisum.game.Game;
-import io.github.domisum.game.GameListener;
 import io.github.domisum.game.ScoreboardManager;
 
 public class BuildTheWord extends JavaPlugin
@@ -41,9 +40,6 @@ public class BuildTheWord extends JavaPlugin
 		MySQLUtil.establishConnection();
 		
 		game = new Game();
-		
-		// register listeners and command executors
-		new GameListener();
 		
 		getLogger().info(getDescription().getName() + " v" + getDescription().getVersion() + " has been enabled\n");
 		

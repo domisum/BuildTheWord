@@ -27,6 +27,8 @@ public class Game
 {
 	
 	// REFERENCES
+	private GameListener gameListener;
+	
 	private WordProvider wordProvider;
 	private ScoreManager scoreManager;
 	
@@ -51,6 +53,8 @@ public class Game
 	public Game()
 	{
 		loadConfigValues();
+		
+		gameListener = new GameListener();
 		
 		wordProvider = new WordProvider();
 		scoreManager = new ScoreManager();
@@ -225,6 +229,8 @@ public class Game
 			buildingCountdown = null;
 		}
 		buildingEndCountdown = null;
+		
+		gameListener.resetBlocks();
 		
 		String message = "Die Runde ist vorbei.";
 		if(!guessed)

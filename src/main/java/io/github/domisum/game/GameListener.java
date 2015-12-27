@@ -1,9 +1,16 @@
 package io.github.domisum.game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -13,6 +20,10 @@ import io.github.domisum.word.Word;
 
 public class GameListener implements Listener
 {
+	
+	// STATUS
+	private List<Location> placedBlockLocations = new ArrayList<Location>();
+	
 	
 	// -------
 	// CONSTRUCTOR
@@ -26,6 +37,20 @@ public class GameListener implements Listener
 	{
 		BuildTheWord pluginInstance = BuildTheWord.getInstance();
 		pluginInstance.getServer().getPluginManager().registerEvents(this, pluginInstance);
+	}
+	
+	
+	// -------
+	// CHANGERS
+	// -------
+	@SuppressWarnings("deprecation")
+	public void resetBlocks()
+	{
+		for(Location loc : placedBlockLocations)
+		{
+			loc.getBlock().setType(Material.AIR);
+			loc.getBlock().setData((byte) 0);
+		}
 	}
 	
 	
@@ -75,6 +100,35 @@ public class GameListener implements Listener
 		}
 		
 		Bukkit.getScheduler().runTaskLater(BuildTheWord.getInstance(), () -> BuildTheWord.getGame().guessWord(player), 0);
+	}
+	
+	
+	@EventHandler
+	public void builderBlockPlace(BlockPlaceEvent event)
+	{
+		Player player = event.getPlayer();
+		
+		if(BuildTheWord.getGame().getBuilder() != player)
+		{
+			event.setCancelled(true);
+			return;
+		}
+		
+		placedBlockLocations.add(event.getBlockPlaced().getLocation());
+	}
+	
+	@EventHandler
+	public void builderBlockBreak(BlockBreakEvent event)
+	{
+		Player player = event.getPlayer();
+		
+		if(BuildTheWord.getGame().getBuilder() != player)
+		{
+			event.setCancelled(true);
+			return;
+		}
+		
+		placedBlockLocations.remove(event.getBlock().getLocation());
 	}
 	
 }
