@@ -43,7 +43,7 @@ public class GameListener implements Listener
 		event.setJoinMessage(null);
 		
 		if(BuildTheWord.getGame().getGameStatus() == GameStatus.WAITING)
-			BuildTheWord.getGame().tryStartGame();
+			BuildTheWord.getGame().tryStartRound();
 	}
 	
 	

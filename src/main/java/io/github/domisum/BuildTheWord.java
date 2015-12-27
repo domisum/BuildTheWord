@@ -54,7 +54,7 @@ public class BuildTheWord extends JavaPlugin
 			
 		game.getScoreManager().reload();
 		ScoreboardManager.updateScoreboard();
-		game.tryStartGame();
+		game.tryStartRound();
 	}
 	
 	@Override

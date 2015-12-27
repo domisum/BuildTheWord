@@ -148,24 +148,22 @@ public class Game
 	// -------
 	// PROCESS
 	// -------
-	public void tryStartGame()
+	public void tryStartRound()
 	{
 		if(Bukkit.getOnlinePlayers().size() >= ConfigUtil.getInt("minimumPlayers"))
-			startGame();
+			startRound();
 		else
+		{
+			gameStatus = GameStatus.WAITING;
 			BuildTheWord.broadcastMessage("Zum Starten des Spiels sind nicht genug Spieler online. (§b" + Bukkit.getOnlinePlayers().size() + "§f/§b"
 					+ ConfigUtil.getInt("minimumPlayers") + "§f)");
-	}
-	
-	private void startGame()
-	{
-		BuildTheWord.broadcastMessage("Das Spiel wird gestartet.");
-		
-		startRound();
+		}
 	}
 	
 	private void startRound()
 	{
+		gameStatus = GameStatus.INGAME;
+		
 		scoreManager.reset();
 		previousBuilderUUIDs.clear();
 		builder = null;
@@ -241,6 +239,7 @@ public class Game
 	
 	private void endRound()
 	{
+		gameStatus = GameStatus.POSTGAME;
 		BuildTheWord.broadcastMessage("Die Runde ist vorbei.");
 		
 		// announce winner
@@ -253,7 +252,7 @@ public class Game
 			BuildTheWord.broadcastMessage(LanguageUtil.getPlayerNameList(winners) + " haben die Runde gewonnen. Glückwunsch!");
 			
 		// start next round
-		Bukkit.getScheduler().runTaskLater(BuildTheWord.getInstance(), () -> startRound(), ConfigUtil.getInt("afterRoundDuration") * 20);
+		Bukkit.getScheduler().runTaskLater(BuildTheWord.getInstance(), () -> tryStartRound(), ConfigUtil.getInt("afterRoundDuration") * 20);
 	}
 	
 }
